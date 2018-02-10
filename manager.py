@@ -69,6 +69,19 @@ def remove_tracks(tracks_to_remove):
         pprint.pprint(results)
     else:
         print("Can't get token for", username)
+    
+def add_tracks(tracks):
+    if tracks == []:
+        return
+    token = get_token()
+    if token:
+        sp = spotipy.Spotify(auth=token)
+        sp.trace = False
+        sp.user_playlist_add_tracks(username, playlist_id, tracks, position=None)
+        #pprint.pprint(results)
+    else:
+        print("Can't get token for", username)
+
 
 def load_backup():
     filename = settings.playlist_id + '.backup'
@@ -94,7 +107,18 @@ def backup_playlist(songs_list):
 
 def remove_all_songs():
     allsongs = build_list(get_list())
-    remove_tracks(removal_conversion(allsongs))     
+    remove_tracks(removal_conversion(allsongs))
+
+def revert_from_backup(backup_number):
+    backup = load_backup()
+    if backup_number in backup:
+        songs = []
+        for song in backup[backup_number]:
+            songs.append(song['uri'])
+        remove_all_songs()
+        add_tracks(songs)
+    else:
+        print("Could'nt find specific backup")
 
 #if __name__ == "__main__":
 #    remove_double_tracks()
