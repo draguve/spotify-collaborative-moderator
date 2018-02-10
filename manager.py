@@ -3,6 +3,8 @@ import spotipy
 import spotipy.util as util
 from collections import defaultdict
 import settings
+import os.path as path 
+import pickle
 
 username = settings.username
 client_id=settings.client_id
@@ -67,6 +69,30 @@ def remove_tracks(tracks_to_remove):
         pprint.pprint(results)
     else:
         print("Can't get token for", username)
-    
+
+#load a dict from a file 
+def load_backup():
+    filename = settings.playlist_id + '.backup'
+    if(not(path.isfile(filename))):
+        return None
+    with open(filename,'rb') as f:
+        __playlist__ = pickle.load(f)
+    return __playlist__
+
+#saves a dict containing username:password to a file
+def backup_playlist(songs_list):
+    songs = {}
+    filename = settings.playlist_id + '.backup'
+    old_backup = load_backup()
+    songs[0]=songs_list
+
+    if old_backup!=None:
+        for i in range(settings.number_of_backups):
+            if i in old_backup:
+                songs[i+1] = old_backup[i]
+
+    with open(filename,'wb') as f:
+        pickle.dump(songs,f)
+
 #if __name__ == "__main__":
 #    remove_double_tracks()
