@@ -70,7 +70,6 @@ def remove_tracks(tracks_to_remove):
     else:
         print("Can't get token for", username)
 
-#load a dict from a file 
 def load_backup():
     filename = settings.playlist_id + '.backup'
     if(not(path.isfile(filename))):
@@ -79,7 +78,6 @@ def load_backup():
         __playlist__ = pickle.load(f)
     return __playlist__
 
-#saves a dict containing username:password to a file
 def backup_playlist(songs_list):
     songs = {}
     filename = settings.playlist_id + '.backup'
@@ -93,6 +91,10 @@ def backup_playlist(songs_list):
 
     with open(filename,'wb') as f:
         pickle.dump(songs,f)
+
+def remove_all_songs():
+    allsongs = build_list(get_list())
+    remove_tracks(removal_conversion(allsongs))     
 
 #if __name__ == "__main__":
 #    remove_double_tracks()
